@@ -182,7 +182,7 @@ const onInput = (field: string) => {
 }
 
 const checkPlanActive = (planType) => {
-  if (trading.value) {
+  if (trading.value && trading.value.investments) {
     return computed(() => trading.value.investments.some(investment => investment.type === planType));
   }
   return computed(() => false); // возвращаем ложное значение, если данные не загружены

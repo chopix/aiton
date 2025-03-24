@@ -11,7 +11,8 @@ export const useTradingStore = defineStore('trading', () => {
   const tradeAmount = ref(0)
 
   const calculateTotalAmount = () => {
-    tradeAmount.value = trading.value.investments.reduce((sum, investment) => sum + investment.amount, 0)
+    if(trading.value.investments) tradeAmount.value = trading.value.investments.reduce((sum, investment) => sum + investment.amount, 0)
+    
   }
 
   
