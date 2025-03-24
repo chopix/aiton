@@ -15,6 +15,8 @@
             <div>
               <p class="trading-left__balance text-white font-medium text-[40px] mt-[5px] sm:text-[30px]"
                 v-if="trading && trading.balance">{{ trading.balance }} TON</p>
+              <p class="trading-left__balance text-white font-medium text-[40px] mt-[5px] sm:text-[30px]" v-else>0 TON
+              </p>
               <p class="trading-left__trade text-white text-[20px] font-light mt-[40px] lg:mt-[20px] sm:text-[15px]">{{
                 t('trade') }}:
                 {{ tradeAmount }} TON</p>
