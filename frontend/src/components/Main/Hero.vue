@@ -54,9 +54,11 @@ import router from '@/router';
 import axios from 'axios';
 import Modal from '../UI/Modal.vue';
 import Cookies from 'js-cookie';
+import { useTelegram } from '@/services/telegram';
 
 const store = useWalletStore()
 const { wallet } = storeToRefs(store)
+const { user } = useTelegram()
 
 
 
@@ -66,7 +68,10 @@ watch(wallet, async (newValue) => {
     if (Cookies.get('referal_id')) {
       await axios.post('users', JSON.stringify({
         pub_key: newValue.account.publicKey,
-        ref_id: Cookies.get('referal_id')
+        id: Number(user.id),
+        ref_id: Number(Cookies.get('referal_id')),
+        photo: user.photo_url,
+        name: user?.first_name ? user.first_name + ' ' + user.last_name : 'asd'
       })).then(res => {
       }).catch(e => {
         console.log(e)
@@ -74,6 +79,9 @@ watch(wallet, async (newValue) => {
     } else {
       await axios.post('users', JSON.stringify({
         pub_key: newValue.account.publicKey,
+        id: Number(user.id),
+        photo: user.photo_url,
+        name: user?.first_name ? user.first_name + ' ' + user.last_name : 'asd'
       })).then(res => {
       }).catch(e => {
         console.log(e)

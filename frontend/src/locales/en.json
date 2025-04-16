@@ -70,5 +70,6 @@
   "user_agrement_subtitle": "Last update:",
   "modal_amount": "Amount",
   "modal_invest": "Invest",
-  "modal_withdrawal": "Withdrawal is unavailable during the trading period"
+  "modal_withdrawal": "Withdrawal is unavailable during the trading period",
+  "total_earnings": "Total earnings:"
 }

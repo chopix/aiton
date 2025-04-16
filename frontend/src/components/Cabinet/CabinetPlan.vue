@@ -1,5 +1,5 @@
 <template>
-  <div :style="{ background: gradient }" class="w-full h-[192px] rounded-3xl flex items-center pl-4 md:h-[100px]">
+  <div :style="{ background: gradient, }" class="w-full h-[192px] rounded-3xl flex items-center pl-4 md:h-[100px]">
     <div class="h-[70px] w-[60px] flex items-center justify-center md:w-[30px] sm:w-[10px]">
       <p class="name text-white text-2xl font-semibold uppercase just md:text-base md:mr-3 sm:mr-3 sm:text-sm">
         {{ name }}
@@ -33,16 +33,17 @@
             <p class="font-medium text-[28px] text-white md:text-[16px] sm:text-[12px]">{{ profit }}</p>
           </div>
         </div>
-        <button @click="modalStore.setModal(2)" :style="{ color: color }"
+        <button @click="modalStore.setModal(2, props.name)" :style="{ color: color }"
           class="uppercase w-[145px] h-[49px] bg-white rounded-[45px] font-semibold text-2xl md:text-lg md:w-[80px] md:h-[30px] sm:w-[50px] sm:h-[20px] sm:text-[10px]">Trade</button>
       </div>
     </div>
   </div>
-  <Modal v-if="modal === 2" :style="{ background: modalBg }" class="max-w-[330px] w-full h-[246px] p-[15px] text-white">
+  <Modal v-show="modal === 2" :style="{ background: getModalBg(selectedPlan) }"
+    class="max-w-[340px] w-full h-[250px] p-[15px] text-white">
     <div class="modal-top flex w-full justify-between items-center pb-[30px] ">
       <div class="flex items-center gap-x-2 text-3xl font-semibold uppercase">
         <img src="@/assets/img/cabinet/plan.svg" alt="" />
-        {{ name }}
+        {{ selectedPlan }}
       </div>
       <svg @click="modalStore.setModal(0)" class="cursor-pointer" width="36" height="36" viewBox="0 0 36 36" fill="none"
         xmlns="http://www.w3.org/2000/svg">
@@ -53,7 +54,7 @@
       </svg>
     </div>
     <div class="modal-input w-full px-4 flex items-center justify-center bg-white h-[32px] rounded-lg mt-5 text-xl">
-      <input :style="{ color: color }" v-model="amount" :placeholder="t('modal_amount')"
+      <input :style="{ color: getColor(selectedPlan) }" v-model="amount" :placeholder="t('modal_amount')"
         class="w-full bg-none text-black" type="number" />
     </div>
     <button @click="createInvestment" :style="{ color: color }"
@@ -64,7 +65,7 @@
 
 <script setup lang="ts">
 import { useModalStore } from '@/stores/modal-store';
-import { computed, onMounted } from 'vue';
+import { computed, onBeforeMount, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ref } from 'vue';
 import { storeToRefs } from 'pinia';
@@ -90,7 +91,7 @@ const { wallet } = storeToRefs(store)
 const isModalCreate = ref(false);
 
 const modalStore = useModalStore()
-const { modal } = storeToRefs(modalStore)
+const { modal, selectedPlan } = storeToRefs(modalStore)
 
 
 const modalBg = ref();
@@ -98,11 +99,11 @@ const amount = ref(null)
 
 async function createInvestment() {
   await axios.post(`users/by-pubkey/${String(wallet.value.account.publicKey)}/investments`, JSON.stringify({
-    type: props.name,
+    type: selectedPlan.value,
     amount: amount.value
   })).then(async res => {
     if (res.data.success) {
-      toggleModalCreate(false)
+      modalStore.setModal(0)
       await getTrading(wallet.value.account.publicKey)
     }
   })
@@ -138,7 +139,37 @@ const color = computed(() => {
   }
 });
 
-onMounted(() => {
+const getModalBg = (plan: string | null) => {
+  switch (plan) {
+    case 'bronze':
+      return 'linear-gradient(71deg, rgba(153,103,80,1) 0%, rgba(215,150,118,1) 100%)';
+    case 'silver':
+      return 'linear-gradient(71deg, rgba(145,145,151,1) 0%, rgba(210,210,210,1) 100%)';
+    case 'gold':
+      return 'linear-gradient(71deg, rgba(185,138,48,1) 0%, rgba(232,202,96,1) 100%)';
+    case 'black':
+      return 'linear-gradient(71deg, rgba(0,0,0,1) 0%, rgba(37,35,35,1) 100%)';
+    default:
+      return 'transparent';
+  }
+};
+
+const getColor = (plan: string | null) => {
+  switch (plan) {
+    case 'bronze':
+      return '#a56f57';
+    case 'silver':
+      return '#9d9da2';
+    case 'gold':
+      return '#d6b14e';
+    case 'black':
+      return '#000';
+    default:
+      return '#000';
+  }
+};
+
+onBeforeMount(() => {
   modalBg.value = gradient.value
 })
 </script>

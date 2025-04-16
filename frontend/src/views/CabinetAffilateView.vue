@@ -10,44 +10,56 @@
         ваших друзей
       </p>
       <div class="affilate-block mt-3 w-full h-[610px] rounded-3xl flex xl:flex-col xl:h-[760px]">
-        <div class="flex flex-col justify-between affilate-left h-full p-[30px] pb-5">
+        <div class="flex flex-col justify-between affilate-left h-full p-[30px] pb-5 xl:p-[15px] sm:pb-[0] sm:h-fit">
           <div class="xl:flex xl:justify-between xl:items-center">
             <img
-              class="affilate-avatar w-[120px] h-[120px] rounded-[18px] xl:w-[80px] xl:h-[80px] sm:w-[60px] sm:h-[60px]"
+              class="affilate-avatar w-[120px] h-[120px] rounded-[18px] xl:w-[80px] xl:h-[80px] sm:w-[60px] sm:h-[60px] order-1 xl:order-2"
               :src="user && user.photo_url ? user.photo_url : '@/assets/img/cabinet/list.png'" alt="">
-            <div>
+            <div class="text-right order-2 xl:order-1 xl:text-left">
               <p class="affilate-referals mt-[30px] text-xl text-white xl:mt-0">Прибыль от рефералов</p>
-              <p class="affilate-cash font-medium text-white text-[40px] xl:text-[25px]">{{ affilates.total_earnings }}
-                TON
-              </p>
+              <div class="flex items-center gap-x-2">
+                <p class="affilate-cash font-medium text-white text-[40px] xl:text-[25px]">{{
+                  affilates.total_earnings
+                }}
+                  TON
+                </p>
+                <p class="affilate-cash font-medium text-white text-[40px] xl:text-[25px] sm:text-[18px] opacity-[0.6]">
+                  {{
+                    affilates.total_earnings_usd
+                  }}$
+                </p>
+              </div>
             </div>
           </div>
-          <button @click="modalInvite(true)"
-            class="w-[300px] h-[60px] bg-white rounded-2xl font-semibold text-[#0098ea] text-2xl xl:hidden">Пригласить</button>
+          <!-- <button @click="modalStore.setModal(3)"
+            class="w-[300px] h-[60px] bg-white rounded-2xl font-semibold text-[#0098ea] text-2xl xl:hidden xl:h-0">Пригласить</button> -->
         </div>
         <div class="affilate-border xl:hidden"></div>
-        <div class="affilate-right p-[30px] w-full">
+        <div class="affilate-right p-[30px] w-full xl:p-[15px] sm:pt-0 sm:mt-[30px]">
           <div class="flex justify-between w-full">
             <p class="font-medium text-2xl text-white">Ваши рефералы</p>
             <p class="font-medium text-2xl text-white">{{ affilates.total_referrals }}</p>
           </div>
           <div class="affilate-referals flex flex-col overflow-y-auto h-[530px] mt-5 gap-y-2">
-            <CabinetAffilate :avatar="user && user.photo_url ? user.photo_url : '@/assets/img/cabinet/list.png'"
-              nick="chopix" :friends="118" :profit="1200" :days="102" :invest="39.55" />
+            <CabinetAffilate v-for="(el, key) in affilates.referrals_by_level" :avatar="el.photo" :nick="el.name"
+              :profit="el.earnings_from_user" :days="el.created_at" :invest="el.total_invested"
+              :profitUsdt="el.earnings_from_user_usd" :levelOne="el.level1_earnings"
+              :levelOneUsdt="el.level1_earnings_usd" :levelTwo="el.level2_earnings"
+              :levelTwoUsdt="el.level2_earnings_usd" :levelThree="el.level3_earnings"
+              :levelThreeUsdt="el.level3_earnings_usd" :investUsdt="el.total_invested_usd" />
           </div>
         </div>
       </div>
-      <button @click="modalInvite(true)"
+      <button @click="modalStore.setModal(3)"
         class="w-full h-[60px] bg-primary mt-5 rounded-2xl font-semibold text-white text-2xl hidden xl:block">Пригласить</button>
     </div>
     <CabinetHeaderMobile class="sm:flex" />
-    <Modal v-show="isModalInvite && modal"
-      class="max-w-[550px] w-full h-[300px] bg-white flex flex-col justify-between">
+    <Modal v-if="modal === 3" class="max-w-[550px] w-full h-[300px] bg-white flex flex-col justify-between">
       <div>
         <div class="flex w-full justify-between">
           <p class="text-primary text-3xl">Ваша реферальная ссылка</p>
-          <svg @click="modalInvite(false)" class="cursor-pointer hover-svg" width="36" height="36" viewBox="0 0 36 36"
-            fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg @click="modalStore.setModal(0)" class="cursor-pointer hover-svg" width="36" height="36"
+            viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect class="change-bg" x="0.75" y="0.75" width="34.5" height="34.5" rx="17.25" />
             <rect x="0.75" y="0.75" width="34.5" height="34.5" rx="17.25" stroke="#0098EA" stroke-width="1.5" />
             <path d="M10.4896 12.0104L12.0868 10.4132L25.6633 23.9896L24.0661 25.5868L10.4896 12.0104Z"
@@ -100,7 +112,6 @@ const { modal } = storeToRefs(modalStore);
 const { tg } = useTelegram()
 const VITE_BOT_URL = import.meta.env.VITE_BOT_URL;
 
-const isModalInvite = ref(false);
 function modalInvite(state) {
   // modalStore.setModal(state);
   // isModalInvite.value = state;

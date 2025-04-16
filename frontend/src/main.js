@@ -14,7 +14,7 @@ import Cookies from 'js-cookie';
 
 const options = {
   manifestUrl:
-    "http://localhost:5173/manifest.json",
+    "https://aiton.bot/tonconnect-manifest.json",
   uiPreferences: { theme: THEME.LIGHT },
   walletsListConfiguration: {
     includeWallets: [

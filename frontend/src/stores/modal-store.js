@@ -5,10 +5,10 @@ export const useModalStore = defineStore('modal', () => {
   
 
   const modal = ref(0);
-  function setModal(payload) {
-    modal.value = payload
-  }
+  const setModal = (value) => {
+    modal.value = value;
+  };
 
   
-  return { modal, setModal }
+  return { modal, setModal };
 })

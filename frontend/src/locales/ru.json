@@ -70,5 +70,6 @@
   "user_agrement_subtitle": "Последнее обновление:",
   "modal_amount": "Сумма",
   "modal_invest": "Инвестировать",
-  "modal_withdrawal": "Вывод не доступен во время торгового периода"
+  "modal_withdrawal": "Вывод не доступен во время торгового периода",
+  "total_earnings": "Всего заработано:"
 }

@@ -3,7 +3,7 @@
     <CabinetHeader class="sm:hidden" />
     <div class="container">
       <div class="trading-wrapper w-full mt-[15px] rounded-3xl relative flex lg:flex-col">
-        <div class="trading-left p-[30px] sm:p-[15px]">
+        <div class="trading-left p-[30px] sm:p-[15px] sm:hidden">
           <div class="lg:flex lg:justify-between lg:items-center">
             <div>
               <img class="trading-left__avatar w-[120px] h-[120px] rounded-[18px]"
@@ -55,7 +55,63 @@
             </router-link>
           </div>
         </div>
-        <div class="trading-right p-[30px] w-full flex flex-col gap-y-5">
+        <div class="trading-left__mobile p-[20px] sm:block">
+          <div class="flex justify-between items-start">
+            <div v-if="trading">
+              <p class="trading-left__nick text-white text-xl font-light">
+                {{ user?.first_name ? user.first_name + ' ' + user.last_name : 'asd' }}
+              </p>
+              <p class="trading-left__balance text-white font-medium text-[40px] sm:text-[30px]"
+                v-if="trading && trading.balance">{{ trading.balance }} TON</p>
+              <p class="trading-left__balance text-white font-medium text-[40px] sm:text-[30px]" v-else>0 TON
+              </p>
+              <p class="trading-left__trade text-white text-[20px] font-light mt-[5px] sm:text-[15px]">{{
+                t('trade') }}:
+                {{ tradeAmount }} TON</p>
+              <p class="trading-left__payout text-white text-[20px] font-light sm:text-[15px]">{{ t('payout') }}: {{
+                trading.available_for_withdrawal }} TON
+              </p>
+              <p class="trading-left__payout text-white text-[20px] font-light sm:text-[15px]">{{ t('total_earnings')
+              }} {{
+                  trading.total_earnings }} TON
+              </p>
+            </div>
+            <img style="border: 2px solid #ffffff;"
+              class="trading-left__avatar relative z-[999] w-[66px] h-[66px] rounded-[18px]"
+              :src="user && user.photo_url ? user.photo_url : '@/assets/img/cabinet/list.png'" alt="">
+          </div>
+          <div class="flex flex-col justify-start mt-[20px] lg:flex-row lg:justify-center lg:gap-x-5">
+            <button @click="modalStore.setModal(1)"
+              class="bg-white w-[600px] h-[30px] rounded-xl flex items-center justify-center text-primary text-base font-semibold gap-x-3">
+              <svg class="mr" width="15" height="16" viewBox="0 0 15 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                  d="M4.08601 0.800049H14.7V11.4141H13.3733V3.06496L1.23821 15.2L0.300049 14.2619L12.4351 2.1268H4.08601V0.800049Z"
+                  fill="#0098EA" />
+              </svg>
+              {{ t('withdraw') }}
+            </button>
+            <router-link to="/cabinet/history" tag="button"
+              class="bg-white w-[600px] h-[30px] rounded-xl flex items-center justify-center text-primary text-base font-semibold gap-x-3 mt-3 lg:mt-0">
+              <svg class="mr" width="19" height="18" viewBox="0 0 19 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip0_2305_2846)">
+                  <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M5 0L9.5 5.00619L8.48776 6.0276L5.69893 2.92507V18H4.30107V2.92507L1.51224 6.0276L0.5 5.00619L5 0Z"
+                    fill="#0098EA" />
+                  <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M14 18L18.5 12.9938L17.4878 11.9724L14.6989 15.0749V0H13.3011V15.0749L10.5122 11.9724L9.5 12.9938L14 18Z"
+                    fill="#0098EA" />
+                </g>
+                <defs>
+                  <clipPath id="clip0_2305_2846">
+                    <rect width="18" height="18" fill="white" transform="translate(0.5)" />
+                  </clipPath>
+                </defs>
+              </svg>
+              {{ t('history') }}
+            </router-link>
+          </div>
+        </div>
+        <div class="trading-right p-[30px] w-full flex flex-col gap-y-5 sm:hidden">
           <CabinetPlan name="bronze" :min="10" profit="1-2%" :is-active="checkPlanActive('bronze').value" />
           <CabinetPlan name="silver" :min="100" profit="3-5%" :is-active="checkPlanActive('silver').value" />
           <CabinetPlan name="gold" :min="250" profit="6-10%" :is-active="checkPlanActive('gold').value" />
@@ -64,6 +120,12 @@
         <img class="absolute shape bottom-0 md:hidden md:top-0 md:right-0" src="@/assets/img/cabinet/shape.png" alt="">
         <img class="absolute shape bottom-0 hidden md:block md:top-0 md:right-0"
           src="@/assets/img/cabinet/shape-mobile.png" alt="">
+      </div>
+      <div class="trading-right w-full flex flex-col gap-y-5 mt-[10px] sm:flex">
+        <CabinetPlan name="bronze" :min="10" profit="1-2%" :is-active="checkPlanActive('bronze').value" />
+        <CabinetPlan name="silver" :min="100" profit="3-5%" :is-active="checkPlanActive('silver').value" />
+        <CabinetPlan name="gold" :min="250" profit="6-10%" :is-active="checkPlanActive('gold').value" />
+        <CabinetPlan name="black" :min="500" profit="11-15%" :is-active="checkPlanActive('black').value" />
       </div>
     </div>
     <CabinetHeaderMobile class="sm:flex" />
@@ -86,15 +148,15 @@
       <p class="text-[12px] ml-[10px]">TON</p>
     </div>
 
-    <!-- <p class="text-[#12172c] opacity-70 font-medium text-[10px] mt-[20px] mb-[5px]">Address</p>
+    <p class="text-[#12172c] opacity-70 font-medium text-[10px] mt-[20px] mb-[5px]">Address</p>
     <div :class="[
       'w-full h-[38px] rounded-[10px] px-[10px] flex items-center',
       errors.address ? 'border border-red-500 bg-[#f7f9fb]' : 'bg-[#f7f9fb]'
     ]">
       <input v-model.trim="form.address" placeholder="Necessary"
-        class="w-full h-full text-[12px] outline-none bg-transparent" @input="onInput('address')" />
+        class="w-full h-full text-[12px] outline-none bg-transparent" disabled @input="onInput('address')" />
     </div>
-    <p v-if="errors.address" class="text-red-500 text-[10px] mt-[5px]">{{ errors.address }}</p> -->
+    <p v-if="errors.address" class="text-red-500 text-[10px] mt-[5px]">{{ errors.address }}</p>
 
     <p class="text-[#12172c] opacity-70 font-medium text-[10px] mt-[20px] mb-[5px]">Tag / Memo (Comment, note, remark)
     </p>
@@ -171,6 +233,7 @@ const form = reactive({
   memo: '',
   amount: null
 })
+
 
 // ошибки
 const errors = reactive({
@@ -286,6 +349,7 @@ watch(
   async (wallet) => {
     if (wallet && wallet.account?.publicKey) {
       await getTrading(wallet.account.publicKey)
+      form.address = wallet.account.publicKey;
     }
   },
   { immediate: true } // Выполнит проверку сразу после монтирования
@@ -301,7 +365,7 @@ watch(
 
   @apply md:h-[850px];
 
-  @apply sm:h-[800px];
+  @apply sm:h-[230px];
 
   &__avatar {
     border: 3px solid #ffffff;
@@ -314,7 +378,8 @@ watch(
   }
 }
 
-button {
+button,
+router-link {
   transition: all 0.2s linear;
 
   &:hover {
