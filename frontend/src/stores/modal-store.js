@@ -6,9 +6,9 @@ export const useModalStore = defineStore('modal', () => {
 
   const modal = ref(0);
   const selectedPlan = ref('')
-  const setModal = (value, selectedPlan = '') => {
+  const setModal = (value, plan = '') => {
     modal.value = value;
-    selectedPlan.value = selectedPlan;
+    selectedPlan.value = plan;
   };
 
   

@@ -20,7 +20,8 @@ bot.on("message:text", (ctx) => {
             inline_keyboard: [
                 [{
                     text: "Open App",
-                    web_app: { url: "https://aiton.bot" }
+                    // web_app: { url: "https://aiton.bot" }
+                    web_app: { url: "https://76a2-2a02-a31a-e1fc-6a80-f945-401-6035-eaa1.ngrok-free.app" }
                 }]
             ]
         }

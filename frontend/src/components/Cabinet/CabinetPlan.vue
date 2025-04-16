@@ -57,7 +57,7 @@
       <input :style="{ color: getColor(selectedPlan) }" v-model="amount" :placeholder="t('modal_amount')"
         class="w-full bg-none text-black" type="number" />
     </div>
-    <button @click="createInvestment" :style="{ color: color }"
+    <button @click="createInvestment" :style="{ color: getColor(selectedPlan) }"
       class="w-full h-[36px] bg-white text-base font-bold rounded-xl mt-3">{{ t('modal_invest') }}</button>
     <p class="text-center text-sm mt-3">{{ t('modal_withdrawal') }}</p>
   </Modal>
